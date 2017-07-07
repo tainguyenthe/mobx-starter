@@ -10,7 +10,7 @@ import Account from '../models/Account'
  */
 export async function getAccount(token) {
   if (token) {
-    const account = await Account.findOne({ token })
+    const account = await Account.findOne({ token }, '+token')
     return account && account.toJSON()
   }
 }

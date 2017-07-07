@@ -1,3 +1,6 @@
+/**
+ * @class Todods
+ */
 export default (state, request) => {
   return new class Todos {
 
