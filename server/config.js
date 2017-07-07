@@ -1,8 +1,13 @@
 const path = require('path')
 
+// We need these globals to fetch data on server-side
+global.HOSTNAME = 'localhost'
+global.PORT = 2000
+
 export default {
   http: {
-    port: 2000,
+    port: global.PORT,
+    hostname: global.HOSTNAME,
     favicon: path.join(__dirname, '../src/assets/favicon.ico'),
     static: {
       '/build': path.join(__dirname, '../../build')

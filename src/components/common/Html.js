@@ -1,17 +1,16 @@
 import React from 'react'
-import Index from '../../pages/Index'
 
-class Html extends React.Component {
+export default class Html extends React.Component {
   render() {
-    const { stores, children } = this.props
-    const devServerURL = !process.env.DEV ? '' : `http://${stores.common.hostname.replace(2000, 2002)}`
+    const { state, children } = this.props
+    const devServerURL = process.env.DEV ? `http://${global.HOSTNAME}:2002` : ''
 
     return (
       <html>
       <head>
         <meta charSet="utf-8"/>
-        <title>{stores.common.title}</title>
-        <meta name="title" content={stores.common.title}/>
+        <title>{state.common.title}</title>
+        <meta name="title" content={state.common.title}/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
         {/* Favicons */}
@@ -21,28 +20,21 @@ class Html extends React.Component {
         <link href={devServerURL + '/build/bundle.css'} rel="stylesheet"/>
 
         {/* SSR State*/}
-        <script dangerouslySetInnerHTML={insertState(stores)}/>
+        <script dangerouslySetInnerHTML={{
+          __html: 'window.__STATE = ' + JSON.stringify(state, null, process.env.DEV ? 4 : 0) + ';'
+        }}/>
       </head>
       <body>
-      {/* Our content rendered here */}
-      <div id="container">
-        <Index stores={stores}>
-          {children}
-        </Index>
-      </div>
 
-      {/* Bundled JS */}
-      <script async src={devServerURL + '/build/bundle.js'}/>
+        {/* Our content rendered here */}
+        <div id="container">
+          {children}
+        </div>
+
+        {/* Bundled JS */}
+        <script async src={devServerURL + '/build/bundle.js'}/>
       </body>
       </html>
     )
-  }
-}
-
-export default Html
-
-function insertState(stores) {
-  return {
-    __html: 'window.__STATE = ' + JSON.stringify(stores, null, process.env.DEV ? 4 : 0) + ';'
   }
 }

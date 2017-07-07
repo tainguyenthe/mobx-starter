@@ -1,44 +1,22 @@
-import request from 'core/request'
-import { extendObservable } from 'mobx'
+export default (state, request) => {
+  return new class Todos {
 
-/**
- * @class Todos
- */
-export default class Todos {
-
-  constructor(state = {}) {
-    extendObservable(this, {
-      loading: false,
-      items: []
-    }, state)
-  }
-
-  map(predicate) {
-    return this.items.map(predicate)
-  }
-
-  add(text) {
-    return request.post(`/api/todos/add`, { text })
-      .then(result => {
-        // Add to list
-        this.items.push({
-          _id: result._id,
-          text: result.text
-        })
-      })
-  }
-
-  async remove(item) {
-    try {
-      console.warn('Removing', item._id)
-      await request.post(`/api/todos/remove`, { _id: item._id })
-      this.items.remove(item)
-    } catch(err) {
-      console.error(err)
+    async add(text) {
+      const result = await request.post(`api/todos/add`, { text })
+      state.todos.push(result)
     }
-  }
 
-  async browse() {
-    this.items = await request.get(`/api/todos`)
+    async remove(item) {
+      try {
+        await request.post(`api/todos/remove`, { _id: item._id })
+        state.todos.remove(item)
+      } catch(err) {
+        console.error(err)
+      }
+    }
+
+    async browse() {
+      state.todos = await request.get(`api/todos`)
+    }
   }
 }

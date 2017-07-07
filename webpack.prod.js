@@ -2,7 +2,7 @@ const fs = require('fs-extra-promise')
 const path = require('path')
 const webpack = require('webpack')
 const config = require('./webpack.base.js')
-const buildPath = path.join(__dirname, '../../build')
+const buildPath = path.join(__dirname, 'build')
 
 // Merge with base configuration
 //-------------------------------
@@ -10,7 +10,7 @@ Object.assign(config, {
   cache: false,
   devtool: 'source-map',
   entry: {
-    bundle: path.join(__dirname, '../../src/client/client.js')
+    bundle: path.join(__dirname, 'src/config/client.js')
   },
   output: {
     path: buildPath,
@@ -45,7 +45,7 @@ console.info('Environment: Production')
 
 // Save files to disk
 //-------------------------------
-config.output.path = path.join(__dirname, '../../build')
+config.output.path = path.join(__dirname, 'build')
 config.plugins.push(
   new webpack.optimize.OccurrenceOrderPlugin(),
   new webpack.optimize.UglifyJsPlugin({

@@ -66,7 +66,9 @@ export async function register(ctx) {
  */
 export async function checkAuthorized(ctx) {
   ctx.authorized = false
-  if (!ctx.token) throw new Exception('Token not provided')
+  if (!ctx.token) {
+    throw new Exception('Token not provided')
+  }
   const account = await Account.findOne({ token: ctx.token }, 'token')
   if (account) {
     const decoded = jwt.decode(account.token, config.session.secret)

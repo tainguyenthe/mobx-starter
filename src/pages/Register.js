@@ -3,19 +3,25 @@ import { observable } from 'mobx'
 import { observer, inject } from 'mobx-react'
 import Error from '../components/common/Error'
 
-@inject('account') @observer
+@inject('store')
+@observer
 class Register extends React.Component {
 
-  @observable form = {
-    username: 'test',
-    password: 'test',
-    errorMsg: null
+  // When route is loaded (isomorphic)
+  static onEnter({ state }) {
+    state.common.title = 'Register'
   }
 
-  handleChange = (key) => ({
-    value: this.form[key],
-    onChange: e => this.form[key] = e.target.value
-  })
+  @observable form = {
+    username: '',
+    password: '',
+    errorMsg: null,
+    loading: false
+  }
+
+  handleChange = (key) => (e) => {
+    this.form[key] = e.target.value
+  }
 
   handleSubmit = async(e) => {
     e.preventDefault()
@@ -23,38 +29,62 @@ class Register extends React.Component {
   }
 
   handleRegister = async() => {
-    const { account } = this.props
+    const { store } = this.props
+    const form = this.form
+    const { username, password } = form
+    const { router } = this.context
+
+    form.errorMsg = null
+    form.loading = true
 
     try {
-      await account.register(this.form)
-      await account.login(this.form)
-      setTimeout(() => window.location.href = '/', 500)
-    } catch(err) {
-      this.form.errorMsg = err.message
+      await store.account.register({
+        username,
+        password
+      })
+      await store.account.login({
+        username,
+        password
+      })
+      router.history.push('/')
+    } catch(error) {
+      form.errorMsg = error
+      form.loading = false
     }
   }
 
   render() {
-    return (
-      <main>
-        <h1>register</h1>
-        <form className="account" onSubmit={this.handleSubmit}>
-          <label>
-            Username
-            <input type="text" {...this.handleChange("username")} required="required"/>
-          </label>
+    const form = this.form
+    return <main>
+      <h1>register</h1>
+      <form className="account" onSubmit={this.handleSubmit}>
+        <label>
+          Username
+          <input type="text"
+                 required
+                 onInput={this.handleChange('username')}
+                 value={form.username}
+          />
+        </label>
 
-          <label>
-            Password
-            <input type="password" {...this.handleChange("password")} required="required"/>
-          </label>
+        <label>
+          Password
+          <input type="password"
+                 required
+                 onInput={this.handleChange('password')}
+                 autoComplete="new-password"
+                 value={form.password}
+          />
+        </label>
 
-          {this.form.errorMsg && <Error text={this.form.errorMsg}/>}
+        {form.loading
+          ? <button disabled>Loading</button>
+          : <button type="submit">Register</button>
+        }
 
-          <button>Register</button>
-        </form>
-      </main>
-    )
+        {form.errorMsg && <Error text={form.errorMsg}/>}
+      </form>
+    </main>
   }
 }
 

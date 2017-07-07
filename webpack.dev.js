@@ -13,7 +13,7 @@ Object.assign(config, {
       'react-hot-loader/patch',
       'webpack-dev-server/client?http://localhost:2002',
       'webpack/hot/only-dev-server',
-      path.join(__dirname, '../../src/client/client.js')
+      path.join(__dirname, 'src/config/client.js')
     ]
   },
   output: {
@@ -28,8 +28,8 @@ config.plugins.push(
   new webpack.NoEmitOnErrorsPlugin(),
   new webpack.NamedModulesPlugin(),
   new webpack.WatchIgnorePlugin([
-    path.join(__dirname, '../../core'),
-    path.join(__dirname, '../../build')
+    path.join(__dirname, 'core'),
+    path.join(__dirname, 'build')
   ]),
   new webpack.DefinePlugin({
     'process.env.DEV': true,

@@ -2,13 +2,13 @@ import React from 'react'
 import { observer, inject } from 'mobx-react'
 import { Link } from 'react-router-dom'
 
-@inject('account')
+@inject('store')
 @observer
 class Menu extends React.Component {
   render() {
-    const { account } = this.props
+    const { store } = this.props
     return <div>
-      {account.isLoggedIn() ? <LoggedInMenu/> : <LoggedOutMenu/>}
+      {store.account.isLoggedIn() ? <LoggedInMenu/> : <LoggedOutMenu/>}
     </div>
   }
 }

@@ -3,7 +3,7 @@
  */
 if (process.env.NODE_ENV === 'production') {
   const {spawn} = require('child_process')
-  const child = spawn('node', ['core/webpack/webpack.prod.js'])
+  const child = spawn('node', ['webpack.prod.js'])
 
   // Output stdout to screen
   child.stdout.on('data', data => process.stdout.write(data.toString()))
@@ -14,5 +14,5 @@ if (process.env.NODE_ENV === 'production') {
 
 } else {
   process.env.DEV = true
-  require('./webpack/webpack.dev.js')
+  require('../webpack.dev.js')
 }

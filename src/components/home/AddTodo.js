@@ -2,7 +2,7 @@ import React from 'react'
 import { observable } from 'mobx'
 import { observer, inject } from 'mobx-react'
 
-@inject('todos')
+@inject('store')
 @observer
 class AddTodo extends React.Component {
 
@@ -10,8 +10,8 @@ class AddTodo extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { todos } = this.props
-    todos.add(this.inputText).then(() => {
+    const { store } = this.props
+    store.todos.add(this.inputText).then(() => {
       // Clear input text on sucess
       this.inputText = ''
     })

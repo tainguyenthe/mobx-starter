@@ -3,17 +3,18 @@ import { observer, inject } from 'mobx-react'
 import AddTodo from '../components/home/AddTodo'
 import Todo from '../components/home/Todo'
 
-@inject('todos') @observer
+@inject('state')
+@observer
 class Home extends React.Component {
 
   // When route is loaded (isomorphic)
-  static onEnter({ todos, common }, params) {
-    common.title = 'Home'
-    return todos.browse()
+  static onEnter({ state, store }, params) {
+    state.common.title = 'Home'
+    return store.todos.browse()
   }
 
   render() {
-    const { todos } = this.props
+    const { state } = this.props
     return (
       <main>
         <h1>todos</h1>
@@ -21,7 +22,7 @@ class Home extends React.Component {
           <AddTodo/>
           <section className="main">
             <ul className="todo-list">
-              {todos.items.map((item, index) => {
+              {state.todos.map((item, index) => {
                 return <Todo key={index} item={item}/>
               })}
             </ul>
@@ -31,5 +32,6 @@ class Home extends React.Component {
     )
   }
 }
+
 
 export default Home

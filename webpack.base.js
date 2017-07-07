@@ -1,7 +1,6 @@
 const path = require('path')
-const webpack = require('webpack')
 const ExtractCSS = require('extract-text-webpack-plugin')
-const sources = (location) => path.join(__dirname, '../../src', location)
+const sources = (location) => path.join(__dirname, location)
 
 module.exports = {
   entry: {},
@@ -14,8 +13,8 @@ module.exports = {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         include: [
-          sources(''),
-          sources('../core')
+          sources('src'),
+          sources('core')
         ],
         query: {
           cacheDirectory: false,
@@ -35,16 +34,16 @@ module.exports = {
         test: /\.(jpg|png|svg)(\?.+)?$/,
         loader: 'url-loader?limit=100000',
         include: [
-          sources('assets'),
-          sources('client/components')
+          sources('src/assets'),
+          sources('src/client/components')
         ]
       },
       {
         test: /\.(ttf|otf|eot|woff2?)(\?.+)?$/,
         loader: 'file-loader',
         include: [
-          sources('assets'),
-          sources('client/components')
+          sources('src/assets'),
+          sources('src/components')
         ]
       },
       {
@@ -54,8 +53,8 @@ module.exports = {
           'sass-loader?sourceMap'
         ]),
         include: [
-          sources('assets'),
-          sources('client/components')
+          sources('src/assets'),
+          sources('src/components')
         ]
       }
     ]
@@ -72,7 +71,7 @@ module.exports = {
       ".jsx"
     ],
     alias: {
-      'core': path.join(__dirname, '../')
+      'core': path.join(__dirname, 'core')
     }
   },
 

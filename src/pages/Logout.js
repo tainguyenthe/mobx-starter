@@ -1,48 +1,51 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { observer, inject } from 'mobx-react'
-import { observable } from 'mobx'
 import Loading from '../components/common/Loading'
 
-@inject('account') @observer
+@inject('store')
+@observer
 class Logout extends React.Component {
 
   // When route is loaded (isomorphic)
-  // static onEnter({ common }) {
-  //   common.title = 'Logout'
-  // }
+  static onEnter({ state }) {
+    state.common.title = 'Logout'
+  }
 
   static contextTypes = {
     router: PropTypes.any
   }
 
-  @observable loading = false
+  state = {
+    loading: false
+  }
 
-  handleLogout = async() => {
-    const { account } = this.props
+  handleLogout = () => {
+    const { store } = this.props
     const { router } = this.context
 
-    await account.logout()
-    this.loading = true
-
-    setTimeout(() => router.history.push('/'), 500)
+    this.setState({
+      loading: true
+    })
+    new Promise(resolve => setTimeout(resolve, 500))
+      .then(() => store.account.logout())
+      .then(() => router.history.push('/'))
   }
 
   render() {
-    if (this.loading) {
-      return <Loading/>
-    }
+    const { loading } = this.state
 
-    return (
-      <main>
-        <div className="account">
-          <h3>Do you want to log out ?</h3>
-          <p>This will disconnect you and you will have to login again next time.</p>
+    return <main>
+      <div className="account">
+        <h3>Do you want to log out ?</h3>
+        <p>This will disconnect you and you will have to login again next time.</p>
 
-          <button onClick={this.handleLogout}>Logout</button>
-        </div>
-      </main>
-    )
+        {loading
+          ? <Loading/>
+          : <button onClick={this.handleLogout}>Logout</button>
+        }
+      </div>
+    </main>
   }
 }
 
