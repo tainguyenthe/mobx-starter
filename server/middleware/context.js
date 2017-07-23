@@ -1,6 +1,6 @@
 import { useStaticRendering } from 'mobx-react'
 import Account from '../models/Account'
-import state from '../../src/stores/State2'
+import state from '../../src/stores/State'
 import context from '../../src/config/context'
 
 useStaticRendering(true)

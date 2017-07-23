@@ -1,6 +1,6 @@
-import Common from '../stores/Common2'
-import Account from '../stores/Account2'
-import Todos from '../stores/Todos2'
+import Common from '../stores/Common'
+import Account from '../stores/Account'
+import Todos from '../stores/Todos'
 
 export default (state) => (
   {
