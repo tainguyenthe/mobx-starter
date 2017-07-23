@@ -2,12 +2,9 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { matchRoutes } from 'react-router-config'
-import { useStaticRendering } from 'mobx-react'
 import Html from '../../src/components/common/Html'
 import Index from '../../src/pages/Index'
 import routes from '../../src/config/routes'
-
-useStaticRendering(true)
 
 // Server-side render
 export default async(ctx, next) => {

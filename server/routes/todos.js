@@ -1,9 +1,14 @@
 import Todo from '../models/Todo'
-import { getAccount } from './account'
 
 export async function getTodos(ctx) {
+
+  if (!ctx.account.id) {
+    ctx.body = []
+    return
+  }
+
   const response = await Todo.find({
-    createdBy: await getAccount(ctx.token)
+    createdBy: ctx.account
   }).limit(50).exec()
 
   ctx.body = response
@@ -16,7 +21,7 @@ export async function addTodos(ctx) {
 
   const newTodo = new Todo({
     text,
-    createdBy: await getAccount(ctx.token)
+    createdBy: ctx.account
   })
   const response = await newTodo.save()
 

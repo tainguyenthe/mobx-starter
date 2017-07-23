@@ -1,7 +1,7 @@
-const database = require('core/database')
-const mongoose = require('mongoose')
+import database from 'core/database'
+import { Schema } from 'mongoose'
 
-const schema = new mongoose.Schema({
+const schema = new Schema({
   username: {
     type: String,
     required: true,
@@ -20,5 +20,26 @@ const schema = new mongoose.Schema({
   },
   description: { type: String }
 })
+
+// Options
+schema.set('toJSON', {
+  getters: true,
+  transform(doc, ret) {
+    delete ret._id
+  }
+})
+
+/**
+ * Get account by token
+ * @param token {string}
+ * @returns {object}
+ */
+schema.statics.getAccount = async function(token) {
+  if (token) {
+    const account = await this.findOne({ token }).populate('profile')
+    return account || {}
+  }
+  return {}
+}
 
 export default database.model('Account', schema)

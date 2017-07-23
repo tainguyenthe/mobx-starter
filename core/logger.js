@@ -3,7 +3,7 @@ if (process.env.BROWSER) {
   console.info = console.log.bind(console,  '%cINF', 'color: #007bff; font-weight: bold')
 } else {
   const {inspect} = require('util')
-  function logger(name, color) {
+  function logger(color, name) {
     return function() {
       // Get arguments without deoptimizing v8
       const args = []
@@ -23,8 +23,9 @@ if (process.env.BROWSER) {
   }
 
   // Enable color logging
-  console.debug = logger('DBG', 6).bind(console)
-  console.info = logger('INF', 2).bind(console)
-  console.warn = logger('WRN', 3).bind(console)
-  console.error = logger('ERR', 1).bind(console)
+  console.debug = logger(6, 'DBG').bind(console)
+  console.info = logger(2, 'INF').bind(console)
+  console.warn = logger(3, 'WRN').bind(console)
+  console.error = logger(1, 'ERR').bind(console)
+  console.server = (msg) => console.log('\u001b[34;1m' + msg + '\u001b[0m')
 }

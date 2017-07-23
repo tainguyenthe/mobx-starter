@@ -10,6 +10,8 @@ class Home extends React.Component {
   // When route is loaded (isomorphic)
   static onEnter({ state, store }, params) {
     state.common.title = 'Home'
+
+    console.warn('onEnter', state)
     return store.todos.browse()
   }
 
