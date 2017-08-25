@@ -11,8 +11,9 @@ class Home extends React.Component {
   static onEnter({ state, store }, params) {
     state.common.title = 'Home'
 
-    console.warn('onEnter', state)
-    return store.todos.browse()
+    return store.todos.browse().then(response => {
+      state.todos = response
+    })
   }
 
   render() {

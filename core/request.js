@@ -5,13 +5,15 @@ import fetch from 'isomorphic-fetch'
  * @param state
  * @returns {Function}
  */
-export default {
-  get(url, params) {
-    return buildRequest('GET', url, omitNil(params))
-  },
+export default function(token) {
+  return {
+    get(url, params) {
+      return buildRequest('GET', token, url, omitNil(params))
+    },
 
-  post(url, data, isMultiForm = false) {
-    return buildRequest('POST', url, data, isMultiForm)
+    post(url, data, isMultiForm = false) {
+      return buildRequest('POST', token, url, data, isMultiForm)
+    }
   }
 }
 
@@ -22,18 +24,16 @@ export default {
  * @param params
  * @param config
  */
-function buildRequest(method, url, params, isMultiForm) {
+function buildRequest(method, token, url, params, isMultiForm) {
   const requestURL = createURL(url) + (method === 'GET' && params ? toQueryString(params) : '')
   const request = {
     method,
     mode: 'cors',
-    credentials: 'include'
-  }
-
-  console.debug('requestURL:', requestURL)
-
-  if (!isMultiForm) {
-    request.headers = {'content-type': 'application/json'}
+    credentials: 'include',
+    headers: {
+      'content-type': 'application/json',
+      token
+    }
   }
 
   if (method === 'POST') {

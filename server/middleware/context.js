@@ -1,9 +1,12 @@
 import { useStaticRendering } from 'mobx-react'
+import { toJS } from 'mobx'
 import Account from '../models/Account'
 import state from '../../src/stores/State'
 import context from '../../src/config/context'
 
 useStaticRendering(true)
+
+const stateClone = JSON.stringify(toJS(state))
 
 /**
  * Middleware for creating the context
@@ -18,13 +21,13 @@ export default async(ctx, next) => {
   ctx.account = await Account.getAccount(ctx.token)
 
   // Create state for SSR
-  ctx.context = context(Object.assign({}, state))
-
-  console.warn(ctx.context.state.account)
+  const state = JSON.parse(stateClone)
 
   if (ctx.account.id) {
-    ctx.context.state.account = ctx.account
+    state.account = ctx.account
   }
+
+  ctx.context = context(state)
 
   await next()
 }

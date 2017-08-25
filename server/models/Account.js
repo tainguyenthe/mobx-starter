@@ -36,7 +36,7 @@ schema.set('toJSON', {
  */
 schema.statics.getAccount = async function(token) {
   if (token) {
-    const account = await this.findOne({ token }).populate('profile')
+    const account = await this.findOne({ token }, '+token').populate('profile')
     return account || {}
   }
   return {}
