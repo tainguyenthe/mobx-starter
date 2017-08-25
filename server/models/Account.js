@@ -25,6 +25,7 @@ const schema = new Schema({
 schema.set('toJSON', {
   getters: true,
   transform(doc, ret) {
+    ret.id = ret._id
     delete ret._id
   }
 })

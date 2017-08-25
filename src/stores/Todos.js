@@ -13,7 +13,7 @@ export default class Todos {
 
   async remove(item) {
     try {
-      await this.request.post(`api/todos/remove`, { _id: item._id })
+      await this.request.post(`api/todos/remove`, { id: item.id })
       state.todos.remove(item)
     } catch(err) {
       console.error(err)
