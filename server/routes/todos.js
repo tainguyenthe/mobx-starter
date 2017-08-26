@@ -15,7 +15,7 @@ export async function getTodos(ctx) {
 }
 
 export async function addTodos(ctx) {
-  const { fields } = ctx.request.fields
+  const { fields } = ctx.request
 
   if (!fields.text) throw new Exception('[text] not provided')
 
