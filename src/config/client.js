@@ -30,6 +30,16 @@ render(<AppContainer>
   </BrowserRouter>
 </AppContainer>, container)
 
+if (process.env.NODE_ENV !== 'production') {
+  require('react-devtools')
+  require('mobx-logger').enableLogging({
+    action: true,
+    reaction: false,
+    transaction: true,
+    compute: false
+  })
+}
+
 // Hot-reloading
 if (module.hot) {
   module.hot.accept()
