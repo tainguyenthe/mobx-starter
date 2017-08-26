@@ -1,27 +1,27 @@
-import state from './State'
+import {action} from 'mobx'
 
 export default class Todos {
 
-  constructor(request) {
+  constructor(request, state) {
     this.request = request
+    this.state = state
   }
 
-  async add(text) {
+  @action async add(text) {
     const result = await this.request.post(`api/todos/add`, { text })
-    state.todos.push(result)
+    this.state.todos.push(result)
   }
 
-  async remove(item) {
+  @action async remove(item) {
     try {
       await this.request.post(`api/todos/remove`, { id: item.id })
-      state.todos.remove(item)
+      this.state.todos.remove(item)
     } catch(err) {
       console.error(err)
     }
   }
 
-  async browse() {
-    state.todos = await this.request.get(`api/todos`)
-    return state.todos // return so we can chain with onEnter
+  @action async browse() {
+    this.state.todos = await this.request.get(`api/todos`)
   }
 }

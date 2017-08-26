@@ -1,37 +1,36 @@
+import {action} from 'mobx'
 import {size, find} from 'lodash'
-import state from './State'
 
 export default class Account {
 
-  constructor(request) {
+  constructor(request, state) {
     this.request = request
+    this.state = state
   }
 
   isLoggedIn() {
-    console.log(state.account.username)
-    return size(state.account.username)
+    return size(this.state.account.username)
   }
 
-  find(username) {
-    return find(state.account.users, { username })
+  @action find(username) {
+    return find(this.state.account.users, { username })
   }
 
-  login(params) {
+  @action login(params) {
     return this.request.post('api/account/login', params).then(account => {
-      state.account = account
+      this.state.account = account
     })
   }
 
-  async logout() {
-    await this.request.get('api/account/logout')
-    state.account.username = null
-    state.account.token = null
-    return Promise.resolve()
+  @action logout() {
+    this.request.get('api/account/logout')
+    this.state.account.username = null
+    this.state.account.token = null
   }
 
-  register(params) {
+  @action register(params) {
     return this.request.post('api/account/register', params).then(account => {
-      state.account = account
+      this.state.account = account
     })
   }
 }

@@ -8,12 +8,9 @@ import Todo from '../components/home/Todo'
 class Home extends React.Component {
 
   // When route is loaded (isomorphic)
-  static onEnter({ state, store }, params) {
+  static async onEnter({ state, store }, params) {
     state.common.title = 'Home'
-
-    return store.todos.browse().then(response => {
-      state.todos = response
-    })
+    await store.todos.browse()
   }
 
   render() {
