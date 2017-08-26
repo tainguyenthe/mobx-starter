@@ -18,7 +18,6 @@ export default {
   },
   server: {
     DEV: !isProduction,
-    SSR: false // Server side rendering
   },
   session: {
     salt: 'SUPER_SALTY_YES?',
