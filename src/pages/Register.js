@@ -1,5 +1,5 @@
 import React from 'react'
-import { observable } from 'mobx'
+import PropTypes from 'prop-types'
 import { observer, inject } from 'mobx-react'
 import Error from '../components/common/Error'
 
@@ -12,7 +12,11 @@ class Register extends React.Component {
     state.common.title = 'Register'
   }
 
-  @observable form = {
+  static contextTypes = {
+    router: PropTypes.any
+  }
+
+  state = {
     username: '',
     password: '',
     errorMsg: null,
@@ -20,7 +24,7 @@ class Register extends React.Component {
   }
 
   handleChange = (key) => (e) => {
-    this.form[key] = e.target.value
+    this.setState({ [key]: e.target.value })
   }
 
   handleSubmit = async(e) => {
@@ -29,32 +33,31 @@ class Register extends React.Component {
   }
 
   handleRegister = async() => {
-    const { store } = this.props
-    const form = this.form
-    const { username, password } = form
     const { router } = this.context
+    const { store } = this.props
+    const { username, password } = this.state
 
-    form.errorMsg = null
-    form.loading = true
+    this.setState({
+      loading: true,
+      errorMsg: null
+    })
 
     try {
       await store.account.register({
         username,
         password
       })
-      await store.account.login({
-        username,
-        password
-      })
       router.history.push('/')
     } catch(error) {
-      form.errorMsg = error
-      form.loading = false
+      this.setState({
+        loading: false,
+        errorMsg: error.toString()
+      })
     }
   }
 
   render() {
-    const form = this.form
+    const { username, password, loading, errorMsg } = this.state
     return <main>
       <h1>register</h1>
       <form className="account" onSubmit={this.handleSubmit}>
@@ -63,7 +66,7 @@ class Register extends React.Component {
           <input type="text"
                  required
                  onInput={this.handleChange('username')}
-                 value={form.username}
+                 value={username}
           />
         </label>
 
@@ -73,16 +76,16 @@ class Register extends React.Component {
                  required
                  onInput={this.handleChange('password')}
                  autoComplete="new-password"
-                 value={form.password}
+                 value={password}
           />
         </label>
 
-        {form.loading
+        {loading
           ? <button disabled>Loading</button>
           : <button type="submit">Register</button>
         }
 
-        {form.errorMsg && <Error text={form.errorMsg}/>}
+        {errorMsg && <Error text={errorMsg}/>}
       </form>
     </main>
   }

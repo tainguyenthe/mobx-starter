@@ -5,7 +5,9 @@ import config from '../server/config'
 mongoose.Promise = Promise
 
 // Initialize our database
-mongoose.connect(config.databases.mongo)
+mongoose.connect(config.databases.mongo, {
+  useMongoClient: true
+})
 
 const db = mongoose.connection
 db.on('error', (err) => console.error(err))

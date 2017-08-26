@@ -52,7 +52,7 @@ class Login extends React.Component {
   }
 
   render() {
-    const { loading, error } = this.state
+    const { loading, error, username } = this.state
 
     if (loading) {
       return <Loading/>
@@ -68,6 +68,7 @@ class Login extends React.Component {
               type="text"
               name="username"
               onChange={this.handleChange}
+              value={username}
               required
             />
           </label>

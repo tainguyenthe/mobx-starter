@@ -1,13 +1,14 @@
+import fs from 'fs'
+import { resolve } from 'path'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { matchRoutes } from 'react-router-config'
-import { useStaticRendering } from 'mobx-react'
-import Html from '../../src/components/common/Html'
 import Index from '../../src/pages/Index'
+import config from '../config'
 import routes from '../../src/config/routes'
 
-useStaticRendering(true)
+const indexHTML = fs.readFileSync(resolve(__dirname, '../../src/pages/index.html'), 'utf8')
 
 // Server-side render
 export default async(ctx, next) => {
@@ -21,11 +22,9 @@ export default async(ctx, next) => {
   await Promise.all(promises)
 
   const context = {}
-  const html = (
+  const components = renderToStaticMarkup(
     <StaticRouter location={ctx.url} context={context}>
-      <Html state={ctx.context.state}>
-        <Index {...ctx.context}/>
-      </Html>
+      <Index {...ctx.context}/>
     </StaticRouter>
   )
 
@@ -36,5 +35,11 @@ export default async(ctx, next) => {
     return await next()
   }
 
-  ctx.body = '<!DOCTYPE html>\n' + renderToStaticMarkup(html)
+  const bundleURL = config.server.DEV ? `//localhost:2002` : ''
+
+  ctx.body = indexHTML
+    .replace(/{bundleURL}/g, bundleURL)
+    .replace('{title}', ctx.context.state.common.title)
+    .replace('{state}', JSON.stringify(ctx.context.state, null, 2))
+    .replace('{children}', components)
 }

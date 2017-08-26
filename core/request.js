@@ -5,15 +5,17 @@ import fetch from 'isomorphic-fetch'
  * @param state
  * @returns {Function}
  */
-export default (token) => ({
-  get(url, params) {
-    return buildRequest('GET', token, url, params)
-  },
+export default function(token) {
+  return {
+    get(url, params) {
+      return buildRequest('GET', token, url, omitNil(params))
+    },
 
-  post(url, data, isMultiForm = false) {
-    return buildRequest('POST', token, url, data, isMultiForm)
+    post(url, data, isMultiForm = false) {
+      return buildRequest('POST', token, url, data, isMultiForm)
+    }
   }
-})
+}
 
 /**
  * Build and execute remote request
@@ -29,20 +31,15 @@ function buildRequest(method, token, url, params, isMultiForm) {
     mode: 'cors',
     credentials: 'include',
     headers: {
-      token: getCookie('token') || token
+      'content-type': 'application/json',
+      token
     }
-  }
-
-  console.warn('requestURL', requestURL)
-
-  if (!isMultiForm) {
-    request.headers['Content-Type'] = 'application/json'
   }
 
   if (method === 'POST') {
     if (isMultiForm) {
       const formData = new FormData()
-      for(var name in params) {
+      for(let name in params) {
         formData.append(name, params[name]);
       }
       request.body = formData
@@ -61,7 +58,9 @@ function buildRequest(method, token, url, params, isMultiForm) {
  * @private
  */
 function createURL(path) {
-  if (process.env.BROWSER) {
+  if (path.startsWith('http')) {
+    return path
+  } else if (process.env.BROWSER) {
     return '/' + path.trimLeft('/')
   } else {
     return `http://${global.HOSTNAME}:${global.PORT}/` + path.trimLeft('/')
@@ -83,13 +82,13 @@ function handleResponse(response) {
 
   if (response.headers.get('content-type').includes('json')) {
     return response.json().then(res => {
+      if (response.status === 403) {
+        console.warn('Unauthorized', response, response.ok)
+      }
       if (response.ok) {
-        if (response.status === 403) {
-          console.warn('Unauthorized', response)
-        }
         return res
       } else {
-        throw res
+        return Promise.reject(res)
       }
     })
   }
@@ -101,7 +100,7 @@ function handleResponse(response) {
  * @param params
  * @returns {string}
  */
-function toQueryString(params) {
+export function toQueryString(params) {
   return '?' + Object.keys(params).map(k => {
     const name = encodeURIComponent(k)
     if (Array.isArray(params[k])) {
@@ -111,9 +110,10 @@ function toQueryString(params) {
   }).join('&')
 }
 
-function getCookie(key) {
-  if (process.env.BROWSER) {
-    const cookieValue = document.cookie.match('(^|;)\\s*' + key + '\\s*=\\s*([^;]+)')
-    return cookieValue ? cookieValue.pop() : ''
-  }
+function omitNil(obj) {
+  if (typeof obj !== 'object') return obj
+  return Object.keys(obj).reduce((acc, v) => {
+    if (obj[v] !== undefined) acc[v] = obj[v]
+    return acc
+  }, {})
 }
