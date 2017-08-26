@@ -1,11 +1,11 @@
 import { autorun } from 'mobx'
 
-export default function({ common }) {
+export default function({ state }) {
 
   // Update document title whenever it changes
   autorun(() => {
-    if (common.title) {
-      document.title = common.title
+    if (state.common.title) {
+      document.title = state.common.title
     }
   })
 }

@@ -2,32 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
 import { Provider } from 'mobx-react'
+import routes from '../config/routes'
 import Menu from '../components/common/Menu'
-import Home from './Home'
-import About from './About'
 import NotFound from './NotFound'
-import Login from './Login'
-import Logout from './Logout'
-import Register from './Register'
 
 class Index extends React.Component {
   render() {
-    const { stores } = this.props
-
     // Wrapping with provider gives children access to stores
     return (
-      <Provider {...stores}>
+      <Provider {...this.props}>
         <div>
           <Menu/>
           <Switch>
-            <Route exact path="/" component={Home}/>
-            <Route exact path="/page/about" component={About}/>
-
-            {/* User management */}
-            <Route exact path="/page/login" component={Login}/>
-            <Route exact path="/page/logout" component={Logout}/>
-            <Route exact path="/page/register" component={Register}/>
-
+            {routes.map((route, i) => {
+              return <Route key={i} exact path={route.path} component={route.component}/>
+            })}
             <Route component={NotFound}/>
           </Switch>
         </div>
@@ -37,7 +26,8 @@ class Index extends React.Component {
 }
 
 Index.propTypes = {
-  stores: PropTypes.object.isRequired
+  store: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired,
 }
 
 export default Index

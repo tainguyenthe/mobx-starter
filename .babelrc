@@ -7,7 +7,7 @@
     "transform-es2015-destructuring",
     "transform-object-rest-spread",
     "transform-react-jsx",
-    ["babel-plugin-webpack-alias", {"config": "./core/webpack/webpack.base.js"}],
+    ["babel-plugin-webpack-alias", {"config": "./webpack.base.js"}],
     ["fast-async"]
   ]
 }

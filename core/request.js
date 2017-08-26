@@ -1,15 +1,19 @@
+import fetch from 'isomorphic-fetch'
+
 /**
  * This is our overly complicated isomorphic "request"
  * @param state
  * @returns {Function}
  */
-export default {
-  get(url, params) {
-    return buildRequest('GET', url, params)
-  },
+export default function(token) {
+  return {
+    get(url, params) {
+      return buildRequest('GET', token, url, omitNil(params))
+    },
 
-  post(url, data, isMultiForm = false) {
-    return buildRequest('POST', url, data, isMultiForm)
+    post(url, data, isMultiForm = false) {
+      return buildRequest('POST', token, url, data, isMultiForm)
+    }
   }
 }
 
@@ -20,25 +24,22 @@ export default {
  * @param params
  * @param config
  */
-function buildRequest(method, url, params, isMultiForm) {
-  const requestURL = url + (method === 'GET' && params ? toQueryString(params) : '')
+function buildRequest(method, token, url, params, isMultiForm) {
+  const requestURL = createURL(url) + (method === 'GET' && params ? toQueryString(params) : '')
   const request = {
     method,
     mode: 'cors',
     credentials: 'include',
     headers: {
-      token: getCookie('token')
+      'content-type': 'application/json',
+      token
     }
-  }
-
-  if (!isMultiForm) {
-    request.headers['Content-Type'] = 'application/json'
   }
 
   if (method === 'POST') {
     if (isMultiForm) {
       const formData = new FormData()
-      for(var name in params) {
+      for(let name in params) {
         formData.append(name, params[name]);
       }
       request.body = formData
@@ -48,6 +49,22 @@ function buildRequest(method, url, params, isMultiForm) {
   }
 
   return fetch(requestURL, request).then(handleResponse)
+}
+
+/**
+ * Prepend host of API server
+ * @param path
+ * @returns {String}
+ * @private
+ */
+function createURL(path) {
+  if (path.startsWith('http')) {
+    return path
+  } else if (process.env.BROWSER) {
+    return '/' + path.trimLeft('/')
+  } else {
+    return `http://${global.HOSTNAME}:${global.PORT}/` + path.trimLeft('/')
+  }
 }
 
 /**
@@ -65,13 +82,13 @@ function handleResponse(response) {
 
   if (response.headers.get('content-type').includes('json')) {
     return response.json().then(res => {
+      if (response.status === 403) {
+        console.warn('Unauthorized', response, response.ok)
+      }
       if (response.ok) {
-        if (response.status === 403) {
-          console.warn('Unauthorized', response)
-        }
         return res
       } else {
-        throw res
+        return Promise.reject(res)
       }
     })
   }
@@ -83,17 +100,20 @@ function handleResponse(response) {
  * @param params
  * @returns {string}
  */
-function toQueryString(params) {
+export function toQueryString(params) {
   return '?' + Object.keys(params).map(k => {
-      const name = encodeURIComponent(k)
-      if (Array.isArray(params[k])) {
-        return params[k].map(val => `${name}[]=${encodeURIComponent(val)}`).join('&')
-      }
-      return `${name}=${encodeURIComponent(params[k])}`
-    }).join('&')
+    const name = encodeURIComponent(k)
+    if (Array.isArray(params[k])) {
+      return params[k].map(val => `${name}[]=${encodeURIComponent(val)}`).join('&')
+    }
+    return `${name}=${encodeURIComponent(params[k])}`
+  }).join('&')
 }
 
-function getCookie(key) {
-  const cookieValue = document.cookie.match('(^|;)\\s*' + key + '\\s*=\\s*([^;]+)')
-  return cookieValue ? cookieValue.pop() : ''
+function omitNil(obj) {
+  if (typeof obj !== 'object') return obj
+  return Object.keys(obj).reduce((acc, v) => {
+    if (obj[v] !== undefined) acc[v] = obj[v]
+    return acc
+  }, {})
 }

@@ -1,21 +1,31 @@
 import React from 'react'
-import { observable } from 'mobx'
+import PropTypes from 'prop-types'
 import { observer, inject } from 'mobx-react'
 import Error from '../components/common/Error'
 
-@inject('account') @observer
+@inject('store')
+@observer
 class Register extends React.Component {
 
-  @observable form = {
-    username: 'test',
-    password: 'test',
-    errorMsg: null
+  // When route is loaded (isomorphic)
+  static onEnter({ state }) {
+    state.common.title = 'Register'
   }
 
-  handleChange = (key) => ({
-    value: this.form[key],
-    onChange: e => this.form[key] = e.target.value
-  })
+  static contextTypes = {
+    router: PropTypes.any
+  }
+
+  state = {
+    username: '',
+    password: '',
+    errorMsg: null,
+    loading: false
+  }
+
+  handleChange = (key) => (e) => {
+    this.setState({ [key]: e.target.value })
+  }
 
   handleSubmit = async(e) => {
     e.preventDefault()
@@ -23,38 +33,61 @@ class Register extends React.Component {
   }
 
   handleRegister = async() => {
-    const { account } = this.props
+    const { router } = this.context
+    const { store } = this.props
+    const { username, password } = this.state
+
+    this.setState({
+      loading: true,
+      errorMsg: null
+    })
 
     try {
-      await account.register(this.form)
-      await account.login(this.form)
-      setTimeout(() => window.location.href = '/', 500)
-    } catch(err) {
-      this.form.errorMsg = err.message
+      await store.account.register({
+        username,
+        password
+      })
+      router.history.push('/')
+    } catch(error) {
+      this.setState({
+        loading: false,
+        errorMsg: error.toString()
+      })
     }
   }
 
   render() {
-    return (
-      <main>
-        <h1>register</h1>
-        <form className="account" onSubmit={this.handleSubmit}>
-          <label>
-            Username
-            <input type="text" {...this.handleChange("username")} required="required"/>
-          </label>
+    const { username, password, loading, errorMsg } = this.state
+    return <main>
+      <h1>register</h1>
+      <form className="account" onSubmit={this.handleSubmit}>
+        <label>
+          Username
+          <input type="text"
+                 required
+                 onInput={this.handleChange('username')}
+                 value={username}
+          />
+        </label>
 
-          <label>
-            Password
-            <input type="password" {...this.handleChange("password")} required="required"/>
-          </label>
+        <label>
+          Password
+          <input type="password"
+                 required
+                 onInput={this.handleChange('password')}
+                 autoComplete="new-password"
+                 value={password}
+          />
+        </label>
 
-          {this.form.errorMsg && <Error text={this.form.errorMsg}/>}
+        {loading
+          ? <button disabled>Loading</button>
+          : <button type="submit">Register</button>
+        }
 
-          <button>Register</button>
-        </form>
-      </main>
-    )
+        {errorMsg && <Error text={errorMsg}/>}
+      </form>
+    </main>
   }
 }
 

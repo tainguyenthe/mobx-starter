@@ -8,20 +8,25 @@ import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { BrowserRouter } from 'react-router-dom'
-import stores from './stores'
+import state from '../stores/State'
 import autorun from './autorun'
+import createContext from './context'
+import routes from './routes'
 import Index from '../pages/Index'
 
 // We render our react app into this element
 const container = document.getElementById('container')
+const context = createContext(state)
 
 // React to changes
-autorun(stores)
+autorun(context)
 
 // Render HTML on the browser
 render(<AppContainer>
   <BrowserRouter>
-    <Index stores={stores}/>
+    <Index {...context}>
+      {routes}
+    </Index>
   </BrowserRouter>
 </AppContainer>, container)
 
