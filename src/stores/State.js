@@ -1,7 +1,7 @@
 import { extendObservable, toJS } from 'mobx'
 
 /**
- * This is our state, we modifity it
+ * This is our state, we update it
  * using the methods from other stores
  */
 class State {
@@ -26,4 +26,4 @@ class State {
 
 export default process.env.BROWSER ? (
   window.__STATE = new State(window.__STATE)
-) : toJS(new State({}))
+) : new State({})

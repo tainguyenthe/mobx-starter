@@ -7,12 +7,14 @@ class Todo extends React.Component {
   render() {
     const { store, item } = this.props
 
-    return <li className="todo">
-      <div className="view">
-        <label>{item.text}</label>
-        <button className="destroy" onClick={(e) => store.todos.remove(item)}/>
-      </div>
-    </li>
+    return (
+      <li className="todo">
+        <div className="view">
+          <label>{item.text}</label>
+          <button className="destroy" onClick={(e) => store.todos.remove(item)}/>
+        </div>
+      </li>
+    )
   }
 }
 

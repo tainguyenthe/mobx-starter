@@ -7,9 +7,13 @@ import { Link } from 'react-router-dom'
 class Menu extends React.Component {
   render() {
     const { store } = this.props
-    return <div>
-      {store.account.isLoggedIn() ? <LoggedInMenu/> : <LoggedOutMenu/>}
-    </div>
+    return (
+      <div>
+        {store.account.isLoggedIn()
+          ? <LoggedInMenu/>
+          : <LoggedOutMenu/>}
+      </div>
+    )
   }
 }
 

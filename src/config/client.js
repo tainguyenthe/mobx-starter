@@ -3,7 +3,6 @@ import '../assets/css/index.scss'
 import 'isomorphic-fetch'
 import 'core/polyfills'
 import 'core/logger'
-import 'isomorphic-fetch'
 import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
@@ -31,7 +30,6 @@ render(<AppContainer>
 </AppContainer>, container)
 
 if (process.env.NODE_ENV !== 'production') {
-  require('react-devtools')
   require('mobx-logger').enableLogging({
     action: true,
     reaction: false,

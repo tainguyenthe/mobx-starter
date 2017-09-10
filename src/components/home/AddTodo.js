@@ -22,15 +22,19 @@ class AddTodo extends React.Component {
   }
 
   render() {
-    return <form className="header" onSubmit={this.handleSubmit}>
-      <p>
-        <input type="text"
-               className="new-todo"
-               placeholder="What needs to be done?"
-               value={this.inputText}
-               onChange={this.handleChange}/>
-      </p>
-    </form>
+    return (
+      <form className="header" onSubmit={this.handleSubmit}>
+        <p>
+          <input
+            type="text"
+            className="new-todo"
+            placeholder="What needs to be done?"
+            value={this.inputText}
+            onChange={this.handleChange}
+          />
+        </p>
+      </form>
+    )
   }
 }
 

@@ -75,17 +75,22 @@ Adding database (mongodb) models
 
 Adding stores
 --
-1. Goto `src/client/stores`
-2. Add `[name].js` (based on another store like `account.js`)
-3. Update `src/client/stores.js`
+1. Goto `src/config/stores`
+2. Add `[Name].js` (it's just a class, ex: `Account.js`)
+3. Update `src/config/stores.js`
 
+## Disabling server-side rendering
+
+1. Goto `server/middleware/render.js`
+2. Change `const components = ...` to `const components = null`
 
 F.A.Q.
 --
 ### What are `stores` ?
 
-Stores will contain the state of your application and the methods that mutate that state.
-Basically most of your client side logic is inside stores.
+State contains the state of your application (ex: list of your todos, UI state etc).
+Stores contain the methods that mutate that state (ex: adding a todo, fetching data).
+Technically our State object is also a store, but we make the differentiation so that our logic is easier to follow by using the same principes as redux (one big state object).
 
 
 ### What is `@inject()` and `@observer` ?
