@@ -22,11 +22,12 @@ export default async(ctx, next) => {
   await Promise.all(promises)
 
   const context = {}
-  const components = renderToStaticMarkup(
-    <StaticRouter location={ctx.url} context={context}>
-      <Index {...ctx.context}/>
-    </StaticRouter>
-  )
+  // const components = renderToStaticMarkup(
+  //   <StaticRouter location={ctx.url} context={context}>
+  //     <Index {...ctx.context}/>
+  //   </StaticRouter>
+  // )
+  const components = null;
 
   // This will contain the URL to redirect to if <Redirect> was used
   if (context.url) {

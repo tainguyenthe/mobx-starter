@@ -5,9 +5,9 @@ import { extendObservable, toJS } from 'mobx'
  * using the methods from other stores
  */
 class State {
+
   constructor(state) {
     extendObservable(this, {
-
       account: {
         username: null,
         token: null,

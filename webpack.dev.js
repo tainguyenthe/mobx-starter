@@ -40,33 +40,33 @@ config.plugins.push(
 
 // Run DEV server for hot-reloading
 //---------------------------------
-const compiler = webpack(config)
-const port = 2002
+// const compiler = webpack(config)
+// const port = 2002
 
-new WebpackDevServer(compiler, {
-  publicPath: config.output.publicPath,
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Expose-Headers': 'SourceMap,X-SourceMap'
-  },
-  hot: true,
-  historyApiFallback: true,
-  watchOptions: {
-    aggregateTimeout: 300,
-    poll: false
-  },
-  stats: {
-    colors: true,
-    hash: false,
-    timings: false,
-    version: false,
-    chunks: false,
-    modules: false,
-    children: false,
-    chunkModules: false
-  }
-}).listen(port, '0.0.0.0', function(err) {
-  if (err) return console.error(err)
-
-  console.info('Running on port ' + port)
-})
+// new WebpackDevServer(compiler, {
+//   publicPath: config.output.publicPath,
+//   headers: {
+//     'Access-Control-Allow-Origin': '*',
+//     'Access-Control-Expose-Headers': 'SourceMap,X-SourceMap'
+//   },
+//   hot: true,
+//   historyApiFallback: true,
+//   watchOptions: {
+//     aggregateTimeout: 300,
+//     poll: false
+//   },
+//   stats: {
+//     colors: true,
+//     hash: false,
+//     timings: false,
+//     version: false,
+//     chunks: false,
+//     modules: false,
+//     children: false,
+//     chunkModules: false
+//   }
+// }).listen(port, '0.0.0.0', function(err) {
+//   if (err) return console.error(err)
+//
+//   console.info('Running on port ' + port)
+// })

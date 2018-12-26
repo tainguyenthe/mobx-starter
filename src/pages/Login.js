@@ -7,7 +7,6 @@ import Error from '../components/common/Error'
 @inject('store')
 @observer
 class Login extends React.Component {
-
   // When route is loaded (isomorphic)
   static onEnter({ state }) {
     state.common.title = 'Login'
