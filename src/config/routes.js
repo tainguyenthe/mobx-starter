@@ -7,15 +7,11 @@ import Register from '../pages/Register'
 export default [
   {
     path: '/',
-    component: Home
+    component: Login
   },
   {
     path: '/page/about',
     component: About
-  },
-  {
-    path: '/page/login',
-    component: Login
   },
   {
     path: '/page/logout',

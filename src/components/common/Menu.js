@@ -19,7 +19,6 @@ class Menu extends React.Component {
 
 function LoggedInMenu() {
   return <menu>
-    <Link to="/">Browse</Link>
     <Link to="/page/about">About</Link>
     <Link to="/page/logout">Logout</Link>
   </menu>
@@ -27,9 +26,8 @@ function LoggedInMenu() {
 
 function LoggedOutMenu() {
   return <menu>
-    {/*<Link to="/">Browse</Link>*/}
     {/*<Link to="/page/about">About</Link>*/}
-    <Link to="/page/register">Register</Link>
+    {/* <Link to="/page/register">Register</Link> */}
     {/*<Link to="/page/login">Login</Link>*/}
   </menu>
 }
